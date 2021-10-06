@@ -5,6 +5,7 @@ Simulation of the trajectory that is simulated as two particles interact inverse
 
 choose your initial condition of particles
 
+<img width="447" alt="image" src="https://user-images.githubusercontent.com/42889193/136187871-78d4c081-5cea-4764-99da-84ab3ac0b110.png">
 
 example initial condition :
 
