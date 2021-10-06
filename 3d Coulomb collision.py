@@ -2,6 +2,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.integrate import odeint
 from matplotlib.animation import FuncAnimation
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib import cm
+from matplotlib.ticker import LinearLocator, FormatStrFormatter
 
 class Coulomb_Collsion:
 
@@ -91,12 +94,12 @@ class Coulomb_Collsion:
         plt.figure()
         plt.plot(x1, y1, '-',label='scattering angle='+'%.2f'%(theta1))
         plt.plot(x2, y2, '-',label='rebound angle='+'%.2f'%(theta2))
-        plt.axis('equal')
+#        plt.axis('equal')
         plt.title('Trajectory')
         plt.xlabel('x')
         plt.ylabel('y')
-        plt.ylim([-0.25,0.25])
-        plt.xlim([-0.25,0.25])
+        plt.ylim([-3,3])
+        plt.xlim([-3,3])
         plt.show()
         
         print('scattering angle :',theta1)
@@ -105,37 +108,47 @@ class Coulomb_Collsion:
         print('total momentum :' , p1)
         
         return 0
-    def ani(self):
+    def ani2d(self):
+    
         x1, y1, z1, x2, y2, z2, vec = self.Collision()
-        
-        X1, Y1 = [], []
-        X2, Y2 = [], []
-        line1, = plt.plot([], [], '-')
-        line2, = plt.plot([], [], '-')
-        
-        def update(frame):
-            X1.append(x1[frame])
-            Y1.append(y1[frame])
-            X2.append(x2[frame])
-            Y2.append(y2[frame])
-            line1.set_data(X1, Y1)
-            line2.set_data(X2, Y2)
-        return line,
+        plt.figure()
+        for i in range(self.t*self.time_resolution):
+            plt.plot(x1[:i],y1[:i], '-')
+            plt.plot(x2[:i],y2[:i], '-')
+            plt.show(block=False)
+            plt.title('Trajectory')
+            plt.xlabel('x')
+            plt.ylabel('y')
+            plt.axis('equal')
+#            plt.ylim([-3,3])
+#            plt.xlim([-3,3])
+            plt.pause(0.00001)
+            plt.close()
+            
+    def ani3d(self):
 
-
-        ani = FuncAnimation(fig, update, frames=np.linspace(0, self.t, self.t*self.time_resolution))
-        plt.show()
-
+        x1, y1, z1, x2, y2, z2, vec = self.Collision()
+        f=100
+        for i in range(int(self.t*self.time_resolution/f)):
+            graph1 = plt.figure(1)
+            graph2 = graph1.add_subplot(111,projection = '3d')
+            graph2.plot(x1[:int(f*i)],y1[:int(f*i)],z1[:int(f*i)], 'r')
+            graph2.plot(x2[:int(f*i)],y2[:int(f*i)],z2[:int(f*i)], 'b')
+            
+            plt.show(block=False)
+            plt.pause(0.00001)
+            plt.close()
+            
 c = Coulomb_Collsion()
 
-[m1, q2]
-[m2, q1]
-[x1_0, y1_0, z1_0]    = -10, 0.01, 0
-[x2_0, y2_0, z2_0]    = 0, -0.01, 0
-[vx1_0, vy1_0, vz1_0] = 10, 0, 0
+[m1, q2] = 1,-1
+[m2, q1] = 100, 100
+[x1_0, y1_0, z1_0]    = -1, 1, 0
+[x2_0, y2_0, z2_0]    = 0, 0, 0
+[vx1_0, vy1_0, vz1_0] = 1, 0, 0
 [vx2_0, vy2_0, vz2_0] = 0, 0, 0
 k = 1
-t = 3
+t = 10
 time_resolution = 1000
 
 c.set_init_condition(m1, m2, q1, q2, 
@@ -144,5 +157,6 @@ c.set_init_condition(m1, m2, q1, q2,
                      vx1_0, vy1_0, vz1_0, 
                      vx2_0, vy2_0, vz2_0, 
                      k, t, time_resolution)
-c.plot_trajectory()
-c.ani()
+#c.plot_trajectory()
+#c.ani()
+c.ani3d()
